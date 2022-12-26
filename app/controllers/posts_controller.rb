@@ -23,7 +23,7 @@ class PostsController < ApplicationController
 
   def destroy
     if @post.destory
-      render json: { message: "Post deleted" }
+      render body: nil, status: :no_content
     else
       render json: @post.errors, status: :unprocessable_entity
     end
