@@ -2,13 +2,14 @@ class PostsController < ApplicationController
   before_action :set_post, only: %i[ show destroy ]
 
   def index
-    #@posts = Post.joins(:user).left_outer_joins(:comments).select("COUNT(comments.id) as comment_count, Posts.created_at, Posts.id, Posts.picture_url, Posts.caption, users.username, users.profile_picture, users.id as user_id").group("posts.id, users.username, users.profile_picture, users.id")
-    @posts = Post.preload(:user)
+    @posts = Post.joins(:user).left_outer_joins(:comments).select("COUNT(comments.id) as comment_count, Posts.created_at, Posts.id, Posts.picture_url, Posts.caption, users.username, users.profile_picture, users.id as user_id").group("posts.id, users.username, users.profile_picture, users.id")
+    #@posts = Post.preload(:user)
     render :json => @posts
   end
 
   def create
     @post = Post.new(post_params)
+    @post.user_id = 1
     #@post = User.posts.new(post_params)
 
     if @post.save
