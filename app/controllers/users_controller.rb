@@ -1,15 +1,10 @@
 class UsersController < ApplicationController
-  include JwtToken
+  #include JwtToken
 
   def create
     @user = User.new(user_params)
     if @user.save
-      user_object = {
-        username: @user[:username],
-        user_id: @user[:id],
-      }
-      jwt = jwt_encode(user_object)
-      render :json => { t: jwt }
+      render :json => user_object_jwt(@user)
     else
       render json: @user.errors, status: :unprocessable_entity
     end

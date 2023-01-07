@@ -37,4 +37,12 @@ class ApplicationController < ActionController::API
       render json: { error: "Not Authorized" }, status: 401
     end
   end
+
+  def user_object_jwt(user)
+    user_object = {
+      username: user[:username],
+      user_id: user[:id],
+    }
+    { t: jwt = jwt_encode(user_object) }
+  end
 end
