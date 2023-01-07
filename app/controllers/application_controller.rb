@@ -25,4 +25,16 @@ class ApplicationController < ActionController::API
       render json: { errors: e.message }, status: :unauthorized
     end
   end
+
+  def authorize
+    @headers = request.headers
+    if @headers["Authorization"].present?
+      token = @headers["Authorization"].split(" ").last
+      decoded_token = decode(token)
+      @user = User.find_by(id: decoded_token[:user_id])
+      render json: { error: "Not Authorized" }, status: 401 unless @user
+    else
+      render json: { error: "Not Authorized" }, status: 401
+    end
+  end
 end
