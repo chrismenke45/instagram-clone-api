@@ -1,15 +1,15 @@
-#require "bcrypt"
-
 class UsersController < ApplicationController
-  #include BCrypt
-  #has_secure_password
+  include JwtToken
 
   def create
     @user = User.new(user_params)
-    p user_params
-    #@user.password = user_params[:password]
     if @user.save
-      render :json => @user
+      user_object = {
+        username: @user[:username],
+        user_id: @user[:id],
+      }
+      jwt = jwt_encode(user_object)
+      render :json => { t: jwt }
     else
       render json: @user.errors, status: :unprocessable_entity
     end
