@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  #include JwtToken
+  before_action :set_user, only: [:show, :update, :destroy]
 
   def create
     @user = User.new(user_params)
@@ -11,12 +11,18 @@ class UsersController < ApplicationController
   end
 
   def show
+    render :json => @user
   end
 
   def update
   end
 
   def destory
+    if @user.destory
+      render :json => { message: "User #{@user.id} destroyed" }, status: 200
+    else
+      render :json => { error: "User #{@user.id} could not be destroyed" }, status: 200
+    end
   end
 
   private
@@ -25,12 +31,7 @@ class UsersController < ApplicationController
     params.require(:user).permit(:username, :name, :bio, :profile_picture, :password)
   end
 
-  # def password
-  #   @password ||= Password.new(password_hash)
-  # end
-
-  # def password=(new_password)
-  #   @password = Password.create(new_password)
-  #   self.password_hash = @password
-  # end
+  def set_user
+    @user = User.select(:username, :id, :name, :bio, :profile_picture).where("id = ?", params[:id])
+  end
 end
