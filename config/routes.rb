@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :likes, only: [:create, :destroy]
   end
   resources :users, only: [:create, :update, :destroy]
+  post "auth/login", to: "authentications#login"
   # Defines the root path route ("/")
   # root "articles#index"
   root "posts#index"
