@@ -17,7 +17,7 @@ class ApplicationController < ActionController::API
     header = request.headers["Authorization"]
     header = header.split(" ").last if header
     begin
-      @decoded = JwtToken.decode(header)
+      @decoded = jwt_decode(header)
       @current_user = User.find(@decoded[:user_id])
     rescue ActiveRecord::RecordNotFound => e
       render json: { errors: e.message }, status: :unauthorized
@@ -26,17 +26,17 @@ class ApplicationController < ActionController::API
     end
   end
 
-  def authorize
-    @headers = request.headers
-    if @headers["Authorization"].present?
-      token = @headers["Authorization"].split(" ").last
-      decoded_token = decode(token)
-      @user = User.find_by(id: decoded_token[:user_id])
-      render json: { error: "Not Authorized" }, status: 401 unless @user
-    else
-      render json: { error: "Not Authorized" }, status: 401
-    end
-  end
+  # def authorize
+  #   @headers = request.headers
+  #   if @headers["Authorization"].present?
+  #     token = @headers["Authorization"].split(" ").last
+  #     decoded_token = decode(token)
+  #     @user = User.find_by(id: decoded_token[:user_id])
+  #     render json: { error: "Not Authorized" }, status: 401 unless @user
+  #   else
+  #     render json: { error: "Not Authorized" }, status: 401
+  #   end
+  # end
 
   def user_object_jwt(user)
     user_object = {

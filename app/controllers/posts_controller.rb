@@ -1,9 +1,11 @@
 class PostsController < ApplicationController
   before_action :set_post, only: %i[ show destroy ]
+  before_action :authenticate_user
 
   def index
     @posts = Post.joins(:user).left_outer_joins(:comments).select("COUNT(comments.id) as comment_count, Posts.created_at, Posts.id, Posts.picture_url, Posts.caption, users.username, users.profile_picture, users.id as user_id").group("posts.id, users.username, users.profile_picture, users.id")
     #@posts = Post.preload(:user)
+    p @current_user
     render :json => @posts || { mes: "yee" }
   end
 

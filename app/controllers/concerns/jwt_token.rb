@@ -4,7 +4,7 @@ module JwtToken
   extend ActiveSupport::Concern
   SECRET_KEY = ENV["JWT_SECRET"]
 
-  def jwt_encode(payload, exp = 2.days.from_now)
+  def jwt_encode(payload, exp = 2.minutes.from_now)
     payload[:exp] = exp.to_i
     JWT.encode(payload, SECRET_KEY)
   end
