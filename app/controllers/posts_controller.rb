@@ -3,15 +3,12 @@ class PostsController < ApplicationController
   before_action :authenticate_user
 
   def index
-    @posts = Post.joins(:user).left_outer_joins(:comments).select("COUNT(comments.id) as comment_count, Posts.created_at, Posts.id, Posts.picture_url, Posts.caption, users.username, users.profile_picture, users.id as user_id").group("posts.id, users.username, users.profile_picture, users.id")
-    #@posts = Post.preload(:user)
+    @posts = Post.joins(:user).left_outer_joins(:comments).left_outer_joins(:likes).select("COUNT(comments.id) as comment_count, COUNT(likes.id) as like_count, Posts.created_at, Posts.id, Posts.picture_url, Posts.caption, users.username, users.profile_picture, users.id as user_id").where("users.id = ?", @current_user.id).group("posts.id, users.username, users.profile_picture, users.id")
     p @current_user
     render :json => @posts || { mes: "yee" }
   end
 
   def create
-    # @post = Post.new(post_params)
-    # @post.user_id = @current_user.id
     @post = @current_user.posts.new(post_params)
 
     if @post.save
