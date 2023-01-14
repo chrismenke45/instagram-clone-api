@@ -42,6 +42,7 @@ class ApplicationController < ActionController::API
     user_object = {
       username: user[:username],
       user_id: user[:id],
+      profile_picture: user[:profile_picture],
     }
     { t: jwt = jwt_encode(user_object) }
   end

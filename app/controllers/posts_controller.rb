@@ -8,7 +8,7 @@ class PostsController < ApplicationController
       .where("users.id = ?", @current_user.id)
       .group("posts.id, users.username, users.profile_picture, users.id")
       .order("posts.created_at DESC")
-    render :json => @posts || { mes: "yee" }
+    render :json => @posts
   end
 
   def create
