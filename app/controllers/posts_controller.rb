@@ -4,7 +4,8 @@ class PostsController < ApplicationController
 
   def index
     @posts = Post.joins(:user).left_outer_joins(:comments).left_outer_joins(:likes)
-      .select("COUNT(comments.id) as comment_count, COUNT(likes.id) as like_count, Posts.created_at, Posts.caption, Posts.id, Posts.picture_url, Posts.caption, users.username, users.profile_picture, users.id as user_id")
+      .select("COUNT(DISTINCT comments.id) as comment_count, COUNT(DISTINCT likes.user_id) as like_count, SUM(DISTINCT CASE WHEN Likes.user_id = 6 THEN 1 ELSE 0 END) as current_user_liked")
+      .select("Posts.created_at, Posts.caption, Posts.id, Posts.picture_url, Posts.caption, users.username, users.profile_picture, users.id as user_id")
       .where("users.id = ?", @current_user.id)
       .group("posts.id, users.username, users.profile_picture, users.id")
       .order("posts.created_at DESC")

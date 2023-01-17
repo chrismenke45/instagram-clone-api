@@ -1,18 +1,23 @@
 class LikesController < ApplicationController
+  before_action :authenticate_user
+
   def index
-    @likes = Like.joins(:user).select("user.username, user.name, post.user_id").where("like.post_id = ?", params[:post_id])
+    p "**********************************"
+    p params[:post_id]
+    p params
+    @likes = Like.joins(:user).select("Users.username, Users.name, Users.profile_picture, Likes.user_id").where("Likes.post_id = ?", params[:post_id])
     render :json => @likes
   end
 
   def create
-    @like = Like.new(post_id: params[:post_id])
-    @like.user_id = @current_user.id
-    if @like.save
-      render :json => @like
-    else
-      render json: @like.errors, status: :unprocessable_entity
-    end
-    #@like.user_id = current_user.id
+    @like = Like.find_or_create_by(post_id: params[:post_id], user_id: @current_user.id)
+    render :json => @like
+    # if @like.save
+    #   render :json => @like
+    # else
+    #   render json: @like.errors, status: :unprocessable_entity
+    # end
+    # #@like.user_id = current_user.id
 
   end
 
