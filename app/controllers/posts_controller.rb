@@ -6,7 +6,7 @@ class PostsController < ApplicationController
     @posts = Post.joins(:user).left_outer_joins(:comments).left_outer_joins(:likes)
       .select("COUNT(DISTINCT comments.id) as comment_count, COUNT(DISTINCT likes.user_id) as like_count, CAST(CAST(SUM(DISTINCT CASE WHEN Likes.user_id = #{@current_user.id} THEN 1 ELSE 0 END) AS INT) AS BOOLEAN) as current_user_liked")
       .select("Posts.created_at, Posts.caption, Posts.id, Posts.picture_url, Posts.caption, users.username, users.profile_picture, users.id as user_id")
-      .where("users.id = ?", @current_user.id)
+    #.where("users.id = ?", @current_user.id)
       .group("posts.id, users.username, users.profile_picture, users.id")
       .order("posts.created_at DESC")
     render :json => @posts
