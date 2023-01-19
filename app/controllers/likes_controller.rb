@@ -2,10 +2,9 @@ class LikesController < ApplicationController
   before_action :authenticate_user
 
   def index
-    p "**********************************"
-    p params[:post_id]
-    p params
-    @likes = Like.joins(:user).select("Users.username, Users.name, Users.profile_picture, Likes.user_id").where("Likes.post_id = ?", params[:post_id])
+    @likes = Like.joins(:user)
+      .select("Users.username, Users.name, Users.profile_picture, Likes.user_id")
+      .where("Likes.post_id = ?", params[:post_id])
     render :json => @likes
   end
 
@@ -23,7 +22,7 @@ class LikesController < ApplicationController
 
   def destroy
     @like = Like.find_by(post_id: params[:post_id], user_id: @current_user.id)
-    if @like.destory
+    if @like.destroy
       render :json => { message: "Like Destroyed" }
     else
       render :json => { error: "Like could not be destroyed" }, status: :unprocessable_entity
