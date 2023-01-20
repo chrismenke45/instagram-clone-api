@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :update, :destroy]
+  before_action :set_user, only: [:update, :destroy]
+  before_action :authenticate_user, except: [:create]
 
   def create
     @user = User.new(user_params)
@@ -11,6 +12,13 @@ class UsersController < ApplicationController
   end
 
   def show
+    p "*************************"
+    p params
+    @user = User.left_outer_joins(:posts)
+      .select("Users.username, Users.name, Users.id, Count(DISTINCT Posts.id) as post_count, Users.bio, Users.profile_picture")
+    #  .select("Users.username, Users.name, Users.id, Users.bio, Users.profile_picture")
+      .group("users.id")
+      .where("Users.id = ?", params[:id])
     render :json => @user
   end
 
