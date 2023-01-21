@@ -5,7 +5,10 @@ Rails.application.routes.draw do
     resources :likes, only: [:index, :create]
     delete "/likes", to: "likes#destroy"
   end
-  resources :users, only: [:create, :show, :update, :destroy]
+  resources :users, only: [:create, :show, :update, :destroy] do
+    resources :follows, only: [:index, :create]
+    delete "/follows", to: "follows#destroy"
+  end
   post "auth/login", to: "authentications#login"
   # Defines the root path route ("/")
   # root "articles#index"
