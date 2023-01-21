@@ -12,11 +12,8 @@ class UsersController < ApplicationController
   end
 
   def show
-    p "*************************"
-    p params
     @user = User.left_outer_joins(:posts)
       .select("Users.username, Users.name, Users.id, Count(DISTINCT Posts.id) as post_count, Users.bio, Users.profile_picture")
-    #  .select("Users.username, Users.name, Users.id, Users.bio, Users.profile_picture")
       .group("users.id")
       .where("Users.id = ?", params[:id])
     render :json => @user
