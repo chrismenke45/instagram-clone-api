@@ -1,12 +1,18 @@
 class FollowsController < ApplicationController
+  before_action :authenticate_user
+
   def index
     @follows = Follow.all
     render :json => @likes
   end
 
   def create
-    @follow = Follow.find_or_create_by(followee_id: params[:user_id], follower_id: @current_user.id)
-    render :json => @like
+    @follow = Follow.find_or_initialize_by(followee_id: params[:user_id], follower_id: @current_user.id)
+    if @follow.save
+      render :json => @follow
+    else
+      render json: @follow.errors, status: :unprocessable_entity
+    end
   end
 
   def destroy
