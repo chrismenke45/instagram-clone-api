@@ -13,7 +13,9 @@ class UsersController < ApplicationController
 
   def show
     @user = User.left_outer_joins(:posts)
-      .select("Users.username, Users.name, Users.id, Count(DISTINCT Posts.id) as post_count, Users.bio, Users.profile_picture")
+      .joins("LEFT OUTER JOIN follows AS followees ON followees.follower_id = users.id")
+      .joins("LEFT OUTER JOIN follows AS followers ON followers.followee_id = users.id")
+      .select("Users.username, Users.name, Users.id, Count(DISTINCT Posts.id) as post_count, Users.bio, Users.profile_picture, COUNT(DISTINCT followees.followee_id) AS followee_count, COUNT(DISTINCT followers.follower_id) AS follower_count")
       .group("users.id")
       .where("Users.id = ?", params[:id])
     render :json => @user
