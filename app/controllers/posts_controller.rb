@@ -4,9 +4,11 @@ class PostsController < ApplicationController
 
   def index
     if params[:user]
+      #posts for a specific user's profile
       whereStatement = "users.id = #{params[:user]}"
     else
       whereStatement = "users.id IS NOT NULL"
+      #posts for a users feed
     end
     if params[:preview]
       @posts = Post.joins(:user)

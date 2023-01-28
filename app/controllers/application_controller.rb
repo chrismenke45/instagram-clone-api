@@ -13,6 +13,11 @@ class ApplicationController < ActionController::API
     headers["Access-Control-Allow-Headers"] = "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   end
 
+  def find_current_user_followings #this must be run AFTER authenticate user
+    @current_user_followings = Follow.where("follower_id = ?", @current_user.id).pluck(:followee_id)
+    @current_user_followings = [0] if @current_user_followings.empty?
+  end
+
   def authenticate_user
     header = request.headers["Authorization"]
     header = header.split(" ").last if header
@@ -25,18 +30,6 @@ class ApplicationController < ActionController::API
       render json: { errors: e.message }, status: :unauthorized
     end
   end
-
-  # def authorize
-  #   @headers = request.headers
-  #   if @headers["Authorization"].present?
-  #     token = @headers["Authorization"].split(" ").last
-  #     decoded_token = decode(token)
-  #     @user = User.find_by(id: decoded_token[:user_id])
-  #     render json: { error: "Not Authorized" }, status: 401 unless @user
-  #   else
-  #     render json: { error: "Not Authorized" }, status: 401
-  #   end
-  # end
 
   def user_object_jwt(user)
     user_object = {
