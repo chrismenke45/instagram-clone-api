@@ -8,6 +8,9 @@ class PostsController < ApplicationController
       whereStatement = "users.id = #{params[:user]}"
     elsif params[:discover]
       whereStatement = "users.id IS NOT NULL"
+    elsif params[:search]
+      search = params[:search].downcase
+      whereStatement = "LOWER(posts.caption) LIKE '%#{search}%' OR LOWER(users.username) LIKE '#{search}%' OR LOWER(users.name) LIKE '#{search}%'"
     else
       whereStatement = "users.id IS NOT NULL"
       #posts for a users feed
