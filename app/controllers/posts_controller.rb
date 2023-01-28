@@ -6,6 +6,8 @@ class PostsController < ApplicationController
     if params[:user]
       #posts for a specific user's profile
       whereStatement = "users.id = #{params[:user]}"
+    elsif params[:discover]
+      whereStatement = "users.id IS NOT NULL"
     else
       whereStatement = "users.id IS NOT NULL"
       #posts for a users feed
