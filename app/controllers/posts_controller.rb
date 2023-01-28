@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: %i[ show destroy ]
+  before_action :set_post, only: %i[destroy]
   before_action :authenticate_user
+  before_action :find_current_user_followings, only: %i[index]
 
   def index
     if params[:user]
@@ -12,7 +13,8 @@ class PostsController < ApplicationController
       search = params[:search].downcase
       whereStatement = "LOWER(posts.caption) LIKE '%#{search}%' OR LOWER(users.username) LIKE '#{search}%' OR LOWER(users.name) LIKE '#{search}%'"
     else
-      whereStatement = "users.id IS NOT NULL"
+      #whereStatement = "users.id IS NOT NULL"
+      whereStatement = "users.id IN (#{@current_user_followings.push(@current_user.id).join(", ")})"
       #posts for a users feed
     end
     if params[:preview]
@@ -43,6 +45,11 @@ class PostsController < ApplicationController
   end
 
   def show
+    @post = Post.joins(:user).left_outer_joins(:comments).left_outer_joins(:likes)
+      .select("COUNT(DISTINCT comments.id) as comment_count, COUNT(DISTINCT likes.user_id) as like_count, CAST(CAST(SUM(DISTINCT CASE WHEN Likes.user_id = #{@current_user.id} THEN 1 ELSE 0 END) AS INT) AS BOOLEAN) as current_user_liked")
+      .select("Posts.created_at, Posts.caption, Posts.id, Posts.picture_url, Posts.caption, users.username, users.profile_picture, users.id as user_id")
+      .where("posts.id = ?", params[:id])
+      .group("posts.id, users.username, users.profile_picture, users.id")
     render :json => @post
   end
 

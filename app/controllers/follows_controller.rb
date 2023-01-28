@@ -5,12 +5,12 @@ class FollowsController < ApplicationController
   def index
     if params[:following]
       @follows = Follow.joins("INNER JOIN users ON follows.followee_id = users.id")
-        .select("users.username, users.name, users.profile_picture, follows.followee_id as user_id, CAST(CAST(SUM(DISTINCT CASE WHEN follows.followee_id IN (#{@current_user_followings.join("")}) THEN 1 ELSE 0 END) AS INT) AS BOOLEAN) as current_user_follows")
+        .select("users.username, users.name, users.profile_picture, follows.followee_id as user_id, CAST(CAST(SUM(DISTINCT CASE WHEN follows.followee_id IN (#{@current_user_followings.join(", ")}) THEN 1 ELSE 0 END) AS INT) AS BOOLEAN) as current_user_follows")
         .where("follower_id = ?", params[:user_id])
         .group("follows.followee_id, users.username, Users.name, Users.profile_picture")
     else
       @follows = Follow.joins("INNER JOIN users ON follows.follower_id = users.id")
-        .select("users.username, users.name, users.profile_picture, follows.follower_id as user_id, CAST(CAST(SUM(DISTINCT CASE WHEN follows.follower_id IN (#{@current_user_followings.join("")}) THEN 1 ELSE 0 END) AS INT) AS BOOLEAN) as current_user_follows")
+        .select("users.username, users.name, users.profile_picture, follows.follower_id as user_id, CAST(CAST(SUM(DISTINCT CASE WHEN follows.follower_id IN (#{@current_user_followings.join(", ")}) THEN 1 ELSE 0 END) AS INT) AS BOOLEAN) as current_user_follows")
         .where("followee_id = ?", params[:user_id])
         .group("follows.follower_id, users.username, Users.name, Users.profile_picture")
     end

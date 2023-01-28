@@ -4,7 +4,7 @@ class LikesController < ApplicationController
 
   def index
     @likes = Like.joins(:user)
-      .select("Users.username, Users.name, Users.profile_picture, Likes.user_id, CAST(CAST(SUM(DISTINCT CASE WHEN Users.id IN (#{@current_user_followings.join("")}) THEN 1 ELSE 0 END) AS INT) AS BOOLEAN) as current_user_follows")
+      .select("Users.username, Users.name, Users.profile_picture, Likes.user_id, CAST(CAST(SUM(DISTINCT CASE WHEN Users.id IN (#{@current_user_followings.join(", ")}) THEN 1 ELSE 0 END) AS INT) AS BOOLEAN) as current_user_follows")
       .where("Likes.post_id = ?", params[:post_id])
       .group("likes.user_id, users.username, Users.name, Users.profile_picture")
     render :json => @likes
