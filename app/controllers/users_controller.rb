@@ -1,6 +1,11 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:update, :destroy]
-  before_action :authenticate_user, except: [:create]
+  before_action :authenticate_user, except: [:index, :create]
+
+  def index
+    @users = User.select("username, id as user_id, name, profile_picture").where("username LIKE :name_lookup OR name LIKE :name_lookup", { name_lookup: (params[:search] + "%") })
+    render :json => @users
+  end
 
   def create
     @user = User.new(user_params)
