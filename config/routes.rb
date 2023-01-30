@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :create, :show, :update, :destroy] do
     resources :follows, only: [:index, :create]
     delete "/follows", to: "follows#destroy"
+    resources :messages, only: [:index, :create]
+    get "/messages/:sender_id", to: "messages#show"
   end
   post "auth/login", to: "authentications#login"
   # Defines the root path route ("/")
