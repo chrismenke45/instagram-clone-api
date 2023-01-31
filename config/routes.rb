@@ -11,8 +11,8 @@ Rails.application.routes.draw do
     resources :messages, only: [:index, :create]
     get "/messages/:sender_id", to: "messages#show"
   end
+  resources :medias, only: [:index]
   post "auth/login", to: "authentications#login"
-  # Defines the root path route ("/")
-  # root "articles#index"
+
   root "posts#index"
 end
