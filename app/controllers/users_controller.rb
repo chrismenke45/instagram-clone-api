@@ -27,10 +27,15 @@ class UsersController < ApplicationController
   end
 
   def update
+    if @user.update(user_params)
+      render :json => { message: "User #{@user.id} updated" }, status: 200
+    else
+      render :json => { error: "User #{@user.id} could not be updated" }, status: 200
+    end
   end
 
   def destory
-    if @user.destory
+    if @user.destroy
       render :json => { message: "User #{@user.id} destroyed" }, status: 200
     else
       render :json => { error: "User #{@user.id} could not be destroyed" }, status: 200
@@ -44,6 +49,6 @@ class UsersController < ApplicationController
   end
 
   def set_user
-    @user = User.select(:username, :id, :name, :bio, :profile_picture).where("id = ?", params[:id])
+    @user = User.find(params[:id])
   end
 end
