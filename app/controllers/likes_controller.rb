@@ -20,7 +20,7 @@ class LikesController < ApplicationController
     if @like.destroy
       render :json => { message: "Like Destroyed" }
     else
-      render :json => { error: "Like could not be destroyed" }, status: :unprocessable_entity
+      render :json => { error: "Like could not be destroyed" }, status: :conflict
     end
   end
 end

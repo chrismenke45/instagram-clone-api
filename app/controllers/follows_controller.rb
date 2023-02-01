@@ -31,7 +31,7 @@ class FollowsController < ApplicationController
     if @follow.destroy
       render :json => { message: "Follow Destroyed" }
     else
-      render :json => { error: "Follow could not be destroyed" }, status: :unprocessable_entity
+      render :json => { error: "Follow could not be destroyed" }, status: :conflict
     end
   end
 end

@@ -43,17 +43,3 @@ class MediasController < ApplicationController
     render :json => @all_media
   end
 end
-
-#OLD QUERIES BEFORE MAKING THEM WORK TOGETHER:
-# @follow_media = Follow.joins("JOIN users ON users.id = follows.follower_id")
-#   .select("follows.follower_id AS user_id, users.username, users.profile_picture, follows.created_at, CAST(CAST(SUM(DISTINCT CASE WHEN follows.follower_id IN (#{@current_user_followings.join(", ")}) THEN 1 ELSE 0 END) AS INT) AS BOOLEAN) as current_user_follows")
-#   .select("CAST(NULL AS varchar) AS picture_url, CAST(NULL AS bigint) AS post_id, CAST(NULL AS bigint) AS like_id")
-#   .where("follows.followee_id = :current_user_id", { current_user_id: @current_user.id })
-#   .group("follows.follower_id, users.username, users.profile_picture, follows.created_at")
-# @like_media = Like.joins(:post).joins(:user) #.joins("INNER JOIN users ON users.id = likes.user_id")
-#   .select("posts.picture_url, posts.id AS post_id, users.id AS user_id, users.username, users.profile_picture, likes.id AS like_id, likes.created_at")
-#   .select("CAST(NULL AS boolean) AS current_user_follows")
-#   .where("posts.user_id = :current_user_id AND users.id != :current_user_id", { current_user_id: @current_user.id })
-# @comment_media = Comment.joins(:post).joins(:user)
-#   .select("posts.picture_url, posts.id AS post_id, users.id AS user_id, users.username, users.profile_picture, comments.id AS comment_id, comments.text, comments.created_at")
-#   .where("posts.user_id = :current_user_id AND users.id != :current_user_id", { current_user_id: @current_user.id })

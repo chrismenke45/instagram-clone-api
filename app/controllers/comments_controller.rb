@@ -22,7 +22,7 @@ class CommentsController < ApplicationController
     if @comment.destory
       render body: nil, status: :no_content
     else
-      render json: @comment.errors, status: :unprocessable_entity
+      render json: @comment.errors, status: :conflict
     end
   end
 

@@ -57,7 +57,7 @@ class PostsController < ApplicationController
     if @post.destory
       render body: nil, status: :no_content
     else
-      render json: @post.errors, status: :unprocessable_entity
+      render json: @post.errors, status: :conflict
     end
   end
 
