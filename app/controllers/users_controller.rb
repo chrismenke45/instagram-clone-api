@@ -27,18 +27,22 @@ class UsersController < ApplicationController
   end
 
   def update
-    if @user.update(user_params)
+    if @user.username === "guest"
+      render :json => { error: "Guest user can not be updated" }, status: :unauthorized
+    elsif @user.update(user_params)
       render :json => { message: "User #{@user.id} updated" }, status: 200
     else
-      render :json => { error: "User #{@user.id} could not be updated" }, status: 200
+      render :json => { error: "User #{@user.id} could not be updated" }, status: :unprocessable_entity
     end
   end
 
-  def destory
-    if @user.destroy
+  def destroy
+    if @user.username === "guest"
+      render :json => { error: "Guest user can not be deleted" }, status: :unauthorized
+    elsif @user.destroy
       render :json => { message: "User #{@user.id} destroyed" }, status: 200
     else
-      render :json => { error: "User #{@user.id} could not be destroyed" }, status: 200
+      render :json => { error: "User #{@user.id} could not be destroyed" }, status: :conflict
     end
   end
 
