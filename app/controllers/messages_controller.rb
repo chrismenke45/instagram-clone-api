@@ -2,13 +2,25 @@ class MessagesController < ApplicationController
   before_action :authenticate_user
 
   def index
+    #need inner select statement to find MAX created at messages by each user and then use those id's in this where statement
+    @most_recent_messages_by_each_user = Message.select("MAX(id) AS id")
+      .select("CASE WHEN messages.receiver_id = #{@current_user.id} THEN messages.sender_id ELSE messages.receiver_id END AS user_id")
+      .where("messages.sender_id = :current_user OR messages.receiver_id = :current_user", { current_user: @current_user.id })
+      .group("user_id").to_sql
+
+    # @messages = Message.joins("JOIN users AS senders ON messages.sender_id = senders.id").joins("JOIN users AS receivers ON messages.receiver_id = receivers.id")
+    #   .select("messages.id, messages.created_at, messages.text")
+    #   .select("CASE WHEN messages.receiver_id = #{@current_user.id} THEN messages.sender_id ELSE messages.receiver_id END AS user_id")
+    #   .select("CASE WHEN messages.sender_id = #{@current_user.id} THEN receivers.profile_picture ELSE senders.profile_picture END")
+    #   .select("CASE WHEN messages.sender_id = #{@current_user.id} THEN receivers.username ELSE senders.username END")
+    #   .where("messages.sender_id = :current_user OR messages.receiver_id = :current_user", { current_user: @current_user.id })
     @messages = Message.joins("JOIN users AS senders ON messages.sender_id = senders.id").joins("JOIN users AS receivers ON messages.receiver_id = receivers.id")
       .select("messages.id, messages.created_at, messages.text")
       .select("CASE WHEN messages.receiver_id = #{@current_user.id} THEN messages.sender_id ELSE messages.receiver_id END AS user_id")
       .select("CASE WHEN messages.sender_id = #{@current_user.id} THEN receivers.profile_picture ELSE senders.profile_picture END")
       .select("CASE WHEN messages.sender_id = #{@current_user.id} THEN receivers.username ELSE senders.username END")
-      .where("messages.sender_id = :current_user OR messages.receiver_id = :current_user", { current_user: @current_user.id })
-      .order("created_at DESC")
+      .where("(messages.id, user_id) IN (#{@most_recent_messages_by_each_user})")
+      .order("messages.created_at DESC")
     render :json => @messages
   end
 
