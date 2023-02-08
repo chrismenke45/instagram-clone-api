@@ -29,7 +29,7 @@ class MessagesController < ApplicationController
   end
 
   def show
-    @message.where("sender_id = :current_user AND receiver_id = :other_user OR sender_id = :other_user AND receiver_id = :current_user", { current_user: @current_user.id, other_user: params[:sender_id] })
+    @message = Message.where("sender_id = :current_user AND receiver_id = :other_user OR sender_id = :other_user AND receiver_id = :current_user", { current_user: @current_user.id, other_user: params[:sender_id] })
       .order("messages.created_at DESC")
     render :json => @message
   end
