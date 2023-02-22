@@ -54,8 +54,10 @@ class PostsController < ApplicationController
   end
 
   def destroy
-    if @post.destory
-      render body: nil, status: :no_content
+    if @post.user_id != @current_user.id
+      render json: { message: "you can't delete someone else's post" }, status: 401
+    elsif @post.destroy
+      render json: { message: "post deleted" }, status: 200
     else
       render json: @post.errors, status: :conflict
     end
