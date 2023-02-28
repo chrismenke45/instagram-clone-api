@@ -1,9 +1,13 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:update, :destroy]
-  before_action :authenticate_user, except: [:create]
+  before_action :authenticate_user, except: [:create, :index]
 
   def index
-    @users = User.select("username, id as user_id, name, profile_picture").where("LOWER(username) LIKE :name_lookup OR LOWER(name) LIKE :name_lookup", { name_lookup: (params[:search].downcase + "%") })
+    if params[:usernameOnly]
+      @users = User.select("username").where("LOWER(username) LIKE :name_lookup OR LOWER(name) LIKE :name_lookup", { name_lookup: params[:search].downcase })
+    else
+      @users = User.select("username, id as user_id, name, profile_picture").where("LOWER(username) LIKE :name_lookup OR LOWER(name) LIKE :name_lookup", { name_lookup: (params[:search].downcase + "%") })
+    end
     render :json => @users
   end
 
