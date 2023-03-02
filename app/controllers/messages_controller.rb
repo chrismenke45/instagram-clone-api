@@ -29,8 +29,10 @@ class MessagesController < ApplicationController
   end
 
   def show
+    limitStatement = params[:count] || 25
     @message = Message.where("sender_id = :current_user AND receiver_id = :other_user OR sender_id = :other_user AND receiver_id = :current_user", { current_user: @current_user.id, other_user: params[:sender_id] })
       .order("messages.created_at DESC")
+      .limit(limitStatement)
     render :json => @message
   end
 
