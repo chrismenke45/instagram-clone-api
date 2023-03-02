@@ -5,7 +5,7 @@ class MediasController < ApplicationController
   def index
     # this returns all intances of another user following the current user, or of another user liking or commenting on one of the current users posts
     #for the union to work, table columns must be selected in same order for each query, each query has a lot of selects to make sure they are in the correct order
-
+    limitStatement = (params[:count].to_i.to_s == params[:count]) ? params[:count] : 15
     @like_media = Like.joins(:post).joins(:user)
       .select("76 AS id") #ids are set as the unicode value of "L" for like
       .select("likes.created_at")
@@ -38,7 +38,7 @@ class MediasController < ApplicationController
       .group("follows.follower_id, users.username, users.profile_picture, follows.created_at")
       .to_sql
 
-    @all_media = User.find_by_sql("#{@follow_media} UNION ALL #{@like_media} UNION ALL #{@comment_media} ORDER BY created_at DESC")
+    @all_media = User.find_by_sql("#{@follow_media} UNION ALL #{@like_media} UNION ALL #{@comment_media} ORDER BY created_at DESC LIMIT #{limitStatement}")
 
     render :json => @all_media
   end
