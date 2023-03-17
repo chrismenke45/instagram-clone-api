@@ -1,5 +1,5 @@
 # Instagram Clone API
-This is the backend of the instagram clone I'm currently building with Ruby on Rails. The front end can be found [here](https://github.com/chrismenke45/instagram-clone-client)
+This is the backend of the instagram clone I'm currently building with Ruby on Rails.
 ## How it's made:
 Tech used: Ruby on Rails, PostgreSQL
 <br />
