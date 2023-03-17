@@ -4,7 +4,7 @@ class UsersController < ApplicationController
 
   def index
     if params[:usernameOnly]
-      @users = User.select("username").where("LOWER(username) LIKE :name_lookup OR LOWER(name) LIKE :name_lookup", { name_lookup: params[:search].downcase })
+      @users = User.select("username").where("LOWER(username) LIKE :name_lookup", { name_lookup: params[:search].downcase })
     else
       @users = User.select("username, id as user_id, name, profile_picture").where("LOWER(username) LIKE :name_lookup OR LOWER(name) LIKE :name_lookup", { name_lookup: (params[:search].downcase + "%") })
     end

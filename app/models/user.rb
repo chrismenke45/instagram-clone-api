@@ -3,7 +3,7 @@ class User < ApplicationRecord
   validates :name, presence: true, length: { in: 3..30 }
   validates :username, presence: true, format: { with: /\A[a-z0-9]+\z/ }, uniqueness: true, length: { in: 3..30 }
   validates :bio, length: { maximum: 2200 }
-  validates :profile_picture, presence: true
+  validates :profile_picture, presence: false
   validates :password_digest, presence: true
 
   has_many :posts, dependent: :destroy
