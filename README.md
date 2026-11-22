@@ -1,5 +1,5 @@
 # Instagram Clone API
-This is the backend of the [instagram clone](https://chrismenke45.github.io/instagram-clone-client) I built with Ruby on Rails.
+This is the backend of the instagram clone<!--[instagram clone](https://chrismenke45.github.io/instagram-clone-client)--> I built with Ruby on Rails.
 <br />
 ![desktop](https://user-images.githubusercontent.com/86500980/226732356-9a93c9bb-ad56-4168-964f-ba982706ce05.png)
 ## How it's made:
